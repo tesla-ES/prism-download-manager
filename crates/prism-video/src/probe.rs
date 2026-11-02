@@ -27,6 +27,10 @@ pub struct ToolPaths {
 /// Arguments shared by every yt-dlp call: ignore user config, tool locations, proxy, browser cookies.
 pub fn global_args(tools: &ToolPaths, opts: &VideoOptions) -> Vec<String> {
     let mut a = vec!["--ignore-config".to_string()];
+    if cfg!(windows) && opts.use_windows_certificate_store {
+        a.push("--compat-options".into());
+        a.push("no-certifi".into());
+    }
     if let Some(ff) = &tools.ffmpeg {
         // Pass the directory when ffprobe sits next to ffmpeg so yt-dlp finds both.
         let dir = ff.parent();

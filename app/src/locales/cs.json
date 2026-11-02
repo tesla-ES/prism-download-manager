@@ -1,4 +1,6 @@
 {
+  "Use Windows Certificate Store": "Use Windows Certificate Store",
+  "Verify yt-dlp HTTPS certificates with Windows trusted certificates": "Verify yt-dlp HTTPS certificates with Windows trusted certificates",
   "Prism could not start": "Prism se nepodařilo spustit",
   "Decrease {label}": "Snížit {label}",
   "Increase {label}": "Zvýšit {label}",

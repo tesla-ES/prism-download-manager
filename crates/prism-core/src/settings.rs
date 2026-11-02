@@ -424,6 +424,8 @@ pub enum SponsorBlock {
 pub struct Video {
     pub ytdlp_path: String,
     pub ffmpeg_path: String,
+    /// Let yt-dlp verify TLS chains using the Windows certificate store.
+    pub use_windows_certificate_store: bool,
     pub auto_update: bool,
     /// Preferred max height ("best" = 0).
     pub preferred_height: u32,
@@ -449,6 +451,7 @@ impl Default for Video {
         Self {
             ytdlp_path: String::new(),
             ffmpeg_path: String::new(),
+            use_windows_certificate_store: cfg!(windows),
             auto_update: true,
             preferred_height: 1080,
             container: "mp4".into(),
@@ -509,5 +512,17 @@ mod tests {
         assert_eq!(s.appearance.theme, Theme::Light);
         assert!(s.downloads.speed_limiter_enabled);
         assert_eq!(s.appearance.accent, "prism");
+    }
+
+    #[test]
+    fn windows_certificate_store_setting_persists() {
+        let mut settings = Settings::default();
+        assert_eq!(settings.video.use_windows_certificate_store, cfg!(windows));
+        settings
+            .apply_patch(&serde_json::json!({"video": {"useWindowsCertificateStore": false}}))
+            .unwrap();
+        let restored: Settings =
+            serde_json::from_str(&serde_json::to_string(&settings).unwrap()).unwrap();
+        assert!(!restored.video.use_windows_certificate_store);
     }
 }

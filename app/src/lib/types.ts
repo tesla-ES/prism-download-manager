@@ -255,6 +255,7 @@ export interface Settings {
   video: {
     ytdlpPath: string;
     ffmpegPath: string;
+    useWindowsCertificateStore: boolean;
     autoUpdate: boolean;
     preferredHeight: number;
     container: string;

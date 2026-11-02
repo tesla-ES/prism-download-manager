@@ -290,6 +290,7 @@ pub(crate) fn video_options(s: &Settings) -> VideoOptions {
     VideoOptions {
         ytdlp_path: path(&s.video.ytdlp_path),
         ffmpeg_path: path(&s.video.ffmpeg_path),
+        use_windows_certificate_store: s.video.use_windows_certificate_store,
         cookies_from_browser: (!s.video.cookies_from_browser.is_empty())
             .then(|| s.video.cookies_from_browser.clone()),
         proxy: proxy_url(s),

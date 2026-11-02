@@ -730,6 +730,9 @@ function Video({ s }: { s: Settings }) {
         <Row title={t("Keep yt-dlp updated automatically")}>
           <Switch checked={s.video.autoUpdate} label={t("Auto-update yt-dlp")} onChange={(v) => save({ video: { autoUpdate: v } })} />
         </Row>
+        {navigator.platform.startsWith("Win") && (
+          <Toggle title={t("Use Windows Certificate Store")} hint={t("Verify yt-dlp HTTPS certificates with Windows trusted certificates")} value={s.video.useWindowsCertificateStore} onChange={(v) => save({ video: { useWindowsCertificateStore: v } })} />
+        )}
         <div className="srow srow--actions">
           <button type="button" className="btn" disabled={!!busy} onClick={() => run("ensure")}>
             {busy === "ensure" ? t("Installing…") : t("Install / repair tools")}

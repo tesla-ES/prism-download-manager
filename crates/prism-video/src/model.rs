@@ -46,6 +46,8 @@ pub struct VideoOptions {
     /// Proxy URL (`http://`, `https://`, `socks5://` ...) for yt-dlp and tool downloads.
     #[serde(deserialize_with = "empty_as_none")]
     pub proxy: Option<String>,
+    /// Use the Windows certificate store for yt-dlp TLS verification.
+    pub use_windows_certificate_store: bool,
     /// Use an ffmpeg found on PATH instead of downloading a managed copy.
     pub prefer_system_ffmpeg: bool,
     /// `-N` for yt-dlp fragment downloads.
@@ -66,6 +68,7 @@ impl Default for VideoOptions {
             cookies_from_browser: None,
             user_agent: None,
             proxy: None,
+            use_windows_certificate_store: cfg!(windows),
             prefer_system_ffmpeg: true,
             concurrent_fragments: 8,
             delete_temp_inputs: true,

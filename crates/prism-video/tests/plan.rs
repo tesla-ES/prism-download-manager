@@ -282,6 +282,7 @@ fn probe_and_global_args() {
         deno: Some(dir.join("deno.exe")),
     };
     let o = VideoOptions {
+        use_windows_certificate_store: false,
         proxy: Some("socks5://127.0.0.1:9050".into()),
         cookies_from_browser: Some("firefox".into()),
         ..Default::default()
@@ -302,14 +303,49 @@ fn probe_and_global_args() {
             "firefox"
         ]
     );
+    let mut enabled = o.clone();
+    enabled.use_windows_certificate_store = true;
+    let with_system_trust = global_args(&tools, &enabled);
+    if cfg!(windows) {
+        assert_eq!(
+            &with_system_trust[..3],
+            ["--ignore-config", "--compat-options", "no-certifi"]
+        );
+        assert_eq!(&with_system_trust[3..], &g[1..]);
+    } else {
+        assert_eq!(with_system_trust, g);
+    }
     // ffprobe elsewhere -> pass the ffmpeg binary itself.
     let t2 = ToolPaths {
         ffprobe: Some(PathBuf::from("other/ffprobe")),
         ..tools.clone()
     };
     assert_eq!(
-        global_args(&t2, &VideoOptions::default())[2],
+        global_args(&t2, &o)[2],
         dir.join("ffmpeg.exe").to_string_lossy()
+    );
+}
+
+#[test]
+fn windows_certificate_store_args() {
+    let tools = ToolPaths::default();
+    let mut opts = VideoOptions {
+        use_windows_certificate_store: false,
+        ..Default::default()
+    };
+    assert_eq!(global_args(&tools, &opts), ["--ignore-config"]);
+    opts.use_windows_certificate_store = true;
+    if cfg!(windows) {
+        assert_eq!(
+            global_args(&tools, &opts),
+            ["--ignore-config", "--compat-options", "no-certifi"]
+        );
+    } else {
+        assert_eq!(global_args(&tools, &opts), ["--ignore-config"]);
+    }
+    assert_eq!(
+        VideoOptions::default().use_windows_certificate_store,
+        cfg!(windows)
     );
 }
 
